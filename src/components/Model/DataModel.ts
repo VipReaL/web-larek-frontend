@@ -1,12 +1,14 @@
-import { IProductItem } from "../types";
-import { IEvents } from "./base/events";
+import { IProductItem } from "../../types";
+import { EventEmitter, IEvents } from "../base/events";
 
 export interface IDataModel {
   productCards: IProductItem[];
+  preview: string | null;
 }
 
 export class DataModel implements IDataModel {
-  protected _productCards: IProductItem[]; // undefined
+  protected _productCards: IProductItem[];
+  preview: string | null;
 
   constructor(protected events: IEvents) {
     this._productCards = []
@@ -14,19 +16,19 @@ export class DataModel implements IDataModel {
 
   /* сохранить массив объектов(карточек) в переменную */
   set productCards(data: IProductItem[]) {
-    this._productCards = data; // - почему не сохраняется массив в переменой
-    // console.log(data); // массив объектов товаров выводиться в консоль
-    this.events.emit('productCards:receive', data);
+    this._productCards = data;
+    this.events.emit('productCards:receive');
   }
 
   get productCards() {
     return this._productCards; // undefined - при вызове свойства
   }
 
-  // 2 способ
-  // setProductCards(data: IProductItem[]) {
-  //   this._productCards = data; // - почему не сохраняется массив в переменой
-  // }
+  //Вывести превью карточки
+  setPreview(item: IProductItem) {
+    this.preview = item.id;
+    this.events.emit('openModalCard', item)
+  }
 }
 
 /*создать сюда метод который будет отдавать нужный массив*/

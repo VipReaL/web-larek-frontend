@@ -1,5 +1,5 @@
-import { ApiListResponse, Api } from './base/api'
-import { IProductItem } from '../types';
+import { ApiListResponse, Api } from '../base/api'
+import { IProductItem } from '../../types';
 
 export class ApiModel extends Api {
   cdn: string;
