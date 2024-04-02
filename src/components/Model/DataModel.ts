@@ -3,12 +3,13 @@ import { EventEmitter, IEvents } from "../base/events";
 
 export interface IDataModel {
   productCards: IProductItem[];
-  preview: string | null;
+  // preview: string | null;
 }
 
 export class DataModel implements IDataModel {
   protected _productCards: IProductItem[];
-  preview: string | null;
+  // preview: string | null;
+  selectedСard: IProductItem; 
 
   constructor(protected events: IEvents) {
     this._productCards = []
@@ -26,8 +27,9 @@ export class DataModel implements IDataModel {
 
   //Вывести превью карточки
   setPreview(item: IProductItem) {
-    this.preview = item.id;
-    this.events.emit('openModalCard', item)
+    // this.preview = item.id;
+    this.selectedСard = item;
+    this.events.emit('ModalCard:open', item)
   }
 }
 

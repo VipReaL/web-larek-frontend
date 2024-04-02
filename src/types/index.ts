@@ -6,3 +6,7 @@ export interface IProductItem {
   category: string;
   price: number | null;
 }
+
+export interface IActions {
+  onClick: (event: MouseEvent) => void;
+}
