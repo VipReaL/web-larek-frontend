@@ -1,4 +1,3 @@
-import { FormErrors, IOrderForm } from '../../types/index';
 import { IEvents } from '../base/events';
 
 export interface IFormModel {
@@ -34,6 +33,17 @@ export class FormModel implements IFormModel {
       this.phone = value;
     } else if (field === 'address') {
       this.address = value;
+    }
+  }
+
+  getOrderLot() {
+    return {
+      payment: this.payment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+      total: this.total,
+      items: this.items,
     }
   }
 }

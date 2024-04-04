@@ -26,16 +26,16 @@ export class Order implements IOrder {
 
     this.address = this.formOrder.querySelector('.form__input');
     this.buttonSubmit = this.formOrder.querySelector('.order__button');
-    
+
     this.formOrder.addEventListener('submit', (event: Event) => {
       event.preventDefault();
       this.events.emit('contacts:open');
     });
 
     this.formOrder.addEventListener('input', (event: Event) => {
-			const target = event.target as HTMLInputElement;
+      const target = event.target as HTMLInputElement;
       const field = target.name;
-			const value = target.value;
+      const value = target.value;
       this.events.emit(`order:changeAddress`, { field, value });
 
       if (value) {
@@ -43,7 +43,7 @@ export class Order implements IOrder {
       } else {
         this.buttonSubmit.disabled = true;
       }
-		});
+    });
   }
 
   // устанавливаем обводку вокруг выбранного метода оплаты

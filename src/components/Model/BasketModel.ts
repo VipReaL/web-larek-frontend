@@ -23,6 +23,7 @@ export class BasketModel implements IBasketModel {
   getCounter() {
     return this.basketProducts.length;
   }
+
   // сумма всех продуктов в корзине
   getSumAllProducts() {
     let sumAll = 0;
@@ -31,11 +32,6 @@ export class BasketModel implements IBasketModel {
     });
     return sumAll;
   }
-
-  // //вернуть информацию по составу в корзине
-  // get statusBasket(): boolean {
-  // 	return this.basket.length === 0
-  // }
 
   // добавить карточку товара в корзину
   setSelectedСard(data: IProductItem) {
@@ -49,5 +45,9 @@ export class BasketModel implements IBasketModel {
     if (index >= 0) {
       this._basketProducts.splice(index, 1);
     }
+  }
+
+  clearBasketProducts() {
+    this.basketProducts = []
   }
 }

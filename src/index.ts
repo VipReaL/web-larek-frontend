@@ -19,6 +19,7 @@ import { BasketItem } from './components/View/BasketItem';
 import { FormModel } from './components/Model/FormModel';
 import { Order } from './components/View/FormOrder';
 import { Contacts } from './components/View/FormContacts';
+import { Success } from './components/View/Success';
 
 const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
@@ -53,7 +54,7 @@ events.on('modalCard:open', (item: IProductItem) => {
   const cardPreview = new CardPreview(cardPreviewTemplate, events)
   modal.content = cardPreview.render(item);
   modal.render();
-})
+});
 
 /********** Добавление карточки товара в корзину **********/
 events.on('card:addBasket', () => {
@@ -100,7 +101,7 @@ events.on('order:open', () => {
 events.on('order:paymentSelection', (button: HTMLButtonElement) => { formModel.payment = button.name }) // передаём способ оплаты
 
 /********** Отслеживаем изменение в поле в вода "адреса доставки" **********/
-events.on(`order:changeAddress`, (data: {field: string, value: string }) => {
+events.on(`order:changeAddress`, (data: { field: string, value: string }) => {
   formModel.setOrderData(data.field, data.value);
 });
 
@@ -110,24 +111,37 @@ events.on(`order:changeAddress`, (data: {field: string, value: string }) => {
 
 /********** Открытие модального окна "Email" и "Телефон" **********/
 events.on('contacts:open', () => {
+  formModel.total = basketModel.getSumAllProducts();
   const contacts = new Contacts(contactsTemplate, events);
   modal.content = contacts.render();
   modal.render();
-})
+});
 
-events.on(`contacts:changeInput`, (data: {field: string, value: string}) => {
+events.on(`contacts:changeInput`, (data: { field: string, value: string }) => {
   formModel.setOrderData(data.field, data.value);
-})
+});
 
 /********** Открытие модального окна "Заказ оформлен" **********/
+events.on('success:open', () => {
+  apiModel.postOrderLot(formModel.getOrderLot())
+    .then((data) => {
+      console.log(data);
+      
+      const success = new Success(successTemplate, events);
+      modal.content = success.render(basketModel.getSumAllProducts());
+      basketModel.clearBasketProducts(); // очищаем корзину
+      basket.renderHeaderBasketCounter(basketModel.getCounter()); // отобразить количество товара на иконке корзины
+      modal.render();
+    })
+    .catch(error => console.log(error));
+});
 
+events.on('success:close', () => modal.close());
 
-/********** Api **********/ // !! в БИЛД сборке не работает, (.bind()) !!!!!!!!!!!!
+/********** Получаем данные с сервера **********/
 apiModel.getListProductCard()
   .then(function (data: IProductItem[]) {
     dataModel.productCards = data;
   })
   // .then(dataModel.setProductCards.bind(dataModel))
-  .catch((error) => {
-    console.log(error);
-  })
+  .catch(error => console.log(error))
