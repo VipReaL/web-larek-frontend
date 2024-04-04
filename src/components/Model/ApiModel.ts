@@ -20,12 +20,4 @@ export class ApiModel extends Api {
       }))
     );
   }
-
-  getProductCard() {
-    this.get('/product')
-      .then((data: ApiListResponse<IProductItem>) => {
-        this.total = data.total;
-        this.items = data.items;
-      })
-  }
 }

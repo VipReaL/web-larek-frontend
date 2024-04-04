@@ -57,5 +57,3 @@ export class Card implements ICard {
     return this._cardElement;
   }
 }
-
-/* изображения не такие как в макете */

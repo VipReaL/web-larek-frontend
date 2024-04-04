@@ -12,7 +12,6 @@ export class Modal implements IModal {
   protected modalContainer: HTMLElement;
   protected closeButton: HTMLButtonElement;
   protected _content: HTMLElement;
-  // protected _contentAll: HTMLElement[] = [];
 
   constructor(modalContainer: HTMLElement, protected events: IEvents) {
     this.modalContainer = modalContainer;
@@ -21,25 +20,13 @@ export class Modal implements IModal {
 
     this.closeButton.addEventListener('click', this.close.bind(this));
     this.modalContainer.addEventListener('click', this.close.bind(this));
-    this.modalContainer.querySelector('.modal__container')
-      .addEventListener('click', (event) => event.stopPropagation());
+    this.modalContainer.querySelector('.modal__container').addEventListener('click', event => event.stopPropagation());
   }
 
   // принимает элемент разметки которая будет отображаться в "modal__content" модального окна
   set content(value: HTMLElement) {
     this._content.replaceChildren(value); // ???
   }
-
-  // принимает элемент разметки которая будет отображаться в "modal__content" модального окна
-  // set contentAll(value: HTMLElement) {
-  //   this._contentAll.push(value);
-
-  // }
-
-  // get contentAll() {
-  //   return this._contentAll
-  // }
-
 
   // открытие модального окна
   open() {

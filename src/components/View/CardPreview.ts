@@ -12,22 +12,10 @@ export class CardPreview extends Card implements ICard {
 
   constructor(template: HTMLTemplateElement, protected events: IEvents, actions?: IActions) {
     super(template, events, actions);
-    this.text = this._cardElement.querySelector('.card__text') // description - text
+    this.text = this._cardElement.querySelector('.card__text') // text - description
     this.button = this._cardElement.querySelector('.card__button'); // кнопка добавить в корзину
 
-    this.button.addEventListener('click', () => {
-      this.events.emit('card:addBasket');
-    });
-    // if (actions?.onClick) this._cardElement.addEventListener('click', actions.onClick);
-
-    /*   ЗАЧЕМ ТАК ????
-            if (actions?.onClick) {
-            if (this._button) {
-                container.removeEventListener('click', actions.onClick);
-                this._button.addEventListener('click', actions.onClick);
-            }
-        }
-    */
+    this.button.addEventListener('click', () => { this.events.emit('card:addBasket') });
   }
 
   render(data: IProductItem): HTMLElement {

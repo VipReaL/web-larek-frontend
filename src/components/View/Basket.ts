@@ -27,18 +27,12 @@ export class Basket implements IBasket {
     this.basketList = this.basket.querySelector('.basket__list');
     this.button = this.basket.querySelector('.basket__button');
     this.basketPrice = this.basket.querySelector('.basket__price');
+    this.button.addEventListener('click', () => { this.events.emit('order:open') });
 
     this.headerBasketButton = document.querySelector('.header__basket');
     this.headerBasketCounter = document.querySelector('.header__basket-counter');
-
-    // if (actions?.onClick) this.headerBasketButton.addEventListener('click', actions.onClick);
-    // actions - для передачи данных
-
-    this.headerBasketButton.addEventListener('click', () => {
-      this.events.emit('basket:open');
-    });
-
-    this.items = [];
+    this.headerBasketButton.addEventListener('click', () => { this.events.emit('basket:open') });
+    this.items = []; //????????????
   }
 
   //Вставляем данные в корзину
@@ -47,7 +41,7 @@ export class Basket implements IBasket {
       this.basketList.replaceChildren(...items);
       this.button.removeAttribute('disabled');
     } else {
-      this.button.setAttribute('disabled', 'disabled'); // блокируем кнопку если товар отсутсвует
+      this.button.setAttribute('disabled', 'disabled'); // блокируем кнопку если товар отсутствует
       this.basketList.replaceChildren(createElement<HTMLParagraphElement>('p', { textContent: 'Корзина пуста', }));
     }
   }
@@ -70,22 +64,3 @@ export class Basket implements IBasket {
     return this.basket;
   }
 }
-
-/*
-  <template id="basket">
-    <div class="basket">
-      <h2 class="modal__title">Корзина</h2>
-      <ul class="basket__list"></ul>
-      <div class="modal__actions">
-        <button class="button basket__button">Оформить</button>
-        <span class="basket__price">0 синапсов</span>
-      </div>
-    </div>
-  </template>
-
-
-
-  <button class="header__basket">
-    <span class="header__basket-counter">0</span>
-  </button>
-*/
