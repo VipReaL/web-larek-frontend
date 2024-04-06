@@ -3,19 +3,15 @@ import './scss/styles.scss';
 import { CDN_URL, API_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
 import { ApiModel } from './components/Model/ApiModel';
-
 import { DataModel } from './components/Model/DataModel';
 import { Card } from './components/View/Card';
 import { CardPreview } from './components/View/CardPreview';
-
 import { IOrderForm, IProductItem } from './types';
 import { Modal } from './components/View/Modal';
 import { ensureElement } from './utils/utils';
-
 import { BasketModel } from './components/Model/BasketModel';
 import { Basket } from './components/View/Basket';
 import { BasketItem } from './components/View/BasketItem';
-
 import { FormModel } from './components/Model/FormModel';
 import { Order } from './components/View/FormOrder';
 import { Contacts } from './components/View/FormContacts';
@@ -36,7 +32,8 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(basketTemplate, events);
 const basketModel = new BasketModel();
 const formModel = new FormModel(events);
-
+const order = new Order(orderTemplate, events);
+const contacts = new Contacts(contactsTemplate, events);
 
 /********** Отображения карточек товара на странице **********/
 events.on('productCards:receive', () => {
@@ -66,7 +63,6 @@ events.on('card:addBasket', () => {
 /********** Открытие модального окна корзины **********/
 events.on('basket:open', () => {
   basket.renderSumAllProducts(basketModel.getSumAllProducts());  // отобразить сумма всех продуктов в корзине
-  // ... кнопка блокируется и разблокируется по статусу
   let i = 0;
   basket.items = basketModel.basketProducts.map((item) => {
     const basketItem = new BasketItem(cardBasketTemplate, events, { onClick: () => events.emit('basket:basketItemRemove', item) });
@@ -92,7 +88,6 @@ events.on('basket:basketItemRemove', (item: IProductItem) => {
 
 /********** Открытие модального окна "способа оплаты" и "адреса доставки" **********/
 events.on('order:open', () => {
-  const order = new Order(orderTemplate, events);
   modal.content = order.render();
   modal.render();
   formModel.items = basketModel.basketProducts.map(item => item.id); // передаём список id товаров которые покупаем
@@ -102,31 +97,42 @@ events.on('order:paymentSelection', (button: HTMLButtonElement) => { formModel.p
 
 /********** Отслеживаем изменение в поле в вода "адреса доставки" **********/
 events.on(`order:changeAddress`, (data: { field: string, value: string }) => {
-  formModel.setOrderData(data.field, data.value);
+  formModel.setOrderAddress(data.field, data.value);
 });
 
-
-//Валидация (ПРОПУСКАЕМ)
-
+/********** Валидация данных строки "address" и payment **********/
+events.on('formErrors:address', (errors: Partial<IOrderForm>) => {
+  const { address, payment } = errors;
+  order.valid = !address && !payment;
+  order.formErrors.textContent = Object.values({address, payment}).filter(i => !!i).join('; ');
+})
 
 /********** Открытие модального окна "Email" и "Телефон" **********/
 events.on('contacts:open', () => {
   formModel.total = basketModel.getSumAllProducts();
-  const contacts = new Contacts(contactsTemplate, events);
   modal.content = contacts.render();
   modal.render();
 });
 
+/********** Отслеживаем изменение в полях вода "Email" и "Телефон" **********/
 events.on(`contacts:changeInput`, (data: { field: string, value: string }) => {
   formModel.setOrderData(data.field, data.value);
 });
+
+/********** Валидация данных строки "Email" и "Телефон" **********/
+events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
+  const { email, phone } = errors;
+  contacts.valid = !email && !phone;
+  contacts.formErrors.textContent = Object.values({phone, email}).filter(i => !!i).join('; ');
+
+  console.log(errors);
+})
 
 /********** Открытие модального окна "Заказ оформлен" **********/
 events.on('success:open', () => {
   apiModel.postOrderLot(formModel.getOrderLot())
     .then((data) => {
-      console.log(data);
-      
+      console.log(data); // ответ сервера
       const success = new Success(successTemplate, events);
       modal.content = success.render(basketModel.getSumAllProducts());
       basketModel.clearBasketProducts(); // очищаем корзину
@@ -137,6 +143,16 @@ events.on('success:open', () => {
 });
 
 events.on('success:close', () => modal.close());
+
+/********** Блокируем прокрутку страницы при открытие модального окна **********/
+events.on('modal:open', () => {
+  modal.locked = true;
+});
+
+/********** Разблокируем прокрутку страницы при закрытие модального окна **********/
+events.on('modal:close', () => {
+  modal.locked = false;
+});
 
 /********** Получаем данные с сервера **********/
 apiModel.getListProductCard()

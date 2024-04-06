@@ -3,6 +3,8 @@ import { IActions, IProductItem } from "../../types";
 import { IEvents } from "../base/events";
 
 export interface ICard {
+  text: HTMLElement;
+  button: HTMLElement;
   render(data: IProductItem): HTMLElement;
 }
 
@@ -12,9 +14,8 @@ export class CardPreview extends Card implements ICard {
 
   constructor(template: HTMLTemplateElement, protected events: IEvents, actions?: IActions) {
     super(template, events, actions);
-    this.text = this._cardElement.querySelector('.card__text') // text - description
-    this.button = this._cardElement.querySelector('.card__button'); // кнопка добавить в корзину
-
+    this.text = this._cardElement.querySelector('.card__text');
+    this.button = this._cardElement.querySelector('.card__button');
     this.button.addEventListener('click', () => { this.events.emit('card:addBasket') });
   }
 

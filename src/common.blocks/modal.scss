@@ -6,11 +6,13 @@
   height: max-content;
   position: absolute;
   display: none;
+  align-items: center;
   justify-content: center;
   background-color: $overlayBackground;
   z-index: 100;
   padding-top: 5vh;
   padding-bottom: 5vh;
+  min-height: 90vmin;
 
   &_active {
     display: flex;
@@ -21,7 +23,7 @@
     @include mixins.flex(column);
     gap: $defaultPadding;
     background-color: $background;
-    // min-height: 90vmin;
+    height: 100%;
     border-radius: 3rem;
     box-sizing: border-box;
     position: relative;

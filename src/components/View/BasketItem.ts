@@ -7,6 +7,7 @@ export interface IBasketItem {
 	title: HTMLElement;
 	price: HTMLElement;
 	buttonDelete: HTMLButtonElement;
+	render(data: IProductItem, item: number): HTMLElement;
 }
 
 export class BasketItem implements IBasketItem {
@@ -23,32 +24,22 @@ export class BasketItem implements IBasketItem {
 		this.price = this.basketItem.querySelector('.card__price');
 		this.buttonDelete = this.basketItem.querySelector('.basket__item-delete');
 
-		if (actions?.onClick) this.buttonDelete.addEventListener('click', actions.onClick);
+		if (actions?.onClick) {
+			this.buttonDelete.addEventListener('click', actions.onClick);
+		}
   }
 
-	protected setPrice(value: number | null): string {
+	protected setPrice(value: number | null) {
     if (value === null) {
       return 'Бесценно'
     }
     return String(value) + ' синапсов'
   }
 
-	render(data: IProductItem, i: number) {
-		this.index.textContent = String(i);
+	render(data: IProductItem, item: number) {
+		this.index.textContent = String(item);
 		this.title.textContent = data.title;
 		this.price.textContent = this.setPrice(data.price);
-		
 		return this.basketItem;
 	}
 }
-
-/*
-<template id="card-basket">
-		<li class="basket__item card card_compact">
-			<span class="basket__item-index">1</span>
-			<span class="card__title">Фреймворк куки судьбы</span>
-			<span class="card__price">2500 синапсов</span>
-			<button class="basket__item-delete card__button" aria-label="удалить"></button>
-		</li>
-	</template>
-*/

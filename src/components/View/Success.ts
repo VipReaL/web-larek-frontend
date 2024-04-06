@@ -1,7 +1,10 @@
 import { IEvents } from "../base/events";
 
 export interface ISuccess {
-
+  success: HTMLElement;
+  description: HTMLElement;
+  button: HTMLButtonElement;
+  render(total: number): HTMLElement;
 }
 
 export class Success {
@@ -14,9 +17,7 @@ export class Success {
     this.description = this.success.querySelector('.order-success__description');
     this.button = this.success.querySelector('.order-success__close');
 
-    this.button.addEventListener('click', () => {
-      events.emit('success:close');
-    })
+    this.button.addEventListener('click', () => { events.emit('success:close') });
   }
 
   render(total: number) {

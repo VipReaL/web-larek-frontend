@@ -18,15 +18,17 @@ export class Card implements ICard {
     "хард-скил": "hard",
     "другое": "other",
   }
-
+  
   constructor(template: HTMLTemplateElement, protected events: IEvents, actions?: IActions) {
     this._cardElement = template.content.querySelector('.card').cloneNode(true) as HTMLElement;
     this._cardCategory = this._cardElement.querySelector('.card__category');
     this._cardTitle = this._cardElement.querySelector('.card__title');
     this._cardImage = this._cardElement.querySelector('.card__image');
     this._cardPrice = this._cardElement.querySelector('.card__price');
-
-    if (actions?.onClick) this._cardElement.addEventListener('click', actions.onClick);
+    
+    if (actions?.onClick) {
+      this._cardElement.addEventListener('click', actions.onClick);
+    }
   }
 
   protected setText(element: HTMLElement, value: unknown): string {
