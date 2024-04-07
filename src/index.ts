@@ -124,8 +124,6 @@ events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
   const { email, phone } = errors;
   contacts.valid = !email && !phone;
   contacts.formErrors.textContent = Object.values({phone, email}).filter(i => !!i).join('; ');
-
-  console.log(errors);
 })
 
 /********** Открытие модального окна "Заказ оформлен" **********/

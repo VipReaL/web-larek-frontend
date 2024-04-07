@@ -19,6 +19,15 @@ export class CardPreview extends Card implements ICard {
     this.button.addEventListener('click', () => { this.events.emit('card:addBasket') });
   }
 
+  notSale(data:IProductItem) {
+    if(data.price) {
+      return 'Купить'
+    } else {
+      this.button.setAttribute('disabled', 'true')
+      return 'Не продается'
+    }
+  }
+
   render(data: IProductItem): HTMLElement {
     this._cardCategory.textContent = data.category;
     this.cardCategory = data.category;
@@ -27,7 +36,7 @@ export class CardPreview extends Card implements ICard {
     this._cardImage.alt = this._cardTitle.textContent;
     this._cardPrice.textContent = this.setPrice(data.price);
     this.text.textContent = data.description;
-    this.button.textContent = 'Купить';
+    this.button.textContent = this.notSale(data);
     return this._cardElement;
   }
 }
