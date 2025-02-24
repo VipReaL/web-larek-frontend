@@ -4,5 +4,6 @@ source
 .yarn
 .idea
 .vscode
+.env
 *.log
 desktop.ini
